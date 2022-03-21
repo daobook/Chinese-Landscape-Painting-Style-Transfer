@@ -17,12 +17,16 @@ def process_all_trian_data(input_path1,input_path2,output_path):
     files_path2 = []
 
     for label in sorted(os.listdir(input_path1)): #label：来源哪个数据集
-        for fname in os.listdir(os.path.join(input_path1, label)):
-            files_path1.append(os.path.join(input_path1, label, fname)) #图片的文件名
+        files_path1.extend(
+            os.path.join(input_path1, label, fname)
+            for fname in os.listdir(os.path.join(input_path1, label))
+        )
 
     for label in sorted(os.listdir(input_path2)): #label：来源哪个数据集
-        for fname in os.listdir(os.path.join(input_path2, label)):
-            files_path2.append(os.path.join(input_path2, label, fname)) #图片的文件名
+        files_path2.extend(
+            os.path.join(input_path2, label, fname)
+            for fname in os.listdir(os.path.join(input_path2, label))
+        )
 
     assert(len(files_path1)==len(files_path2))
 
@@ -45,11 +49,11 @@ def process_all_trian_data(input_path1,input_path2,output_path):
 
 
 if __name__ == "__main__":
-    input_path1 = "canny_pic" 
-    input_path2 = "HED_pic" 
+    input_path1 = "canny_pic"
+    input_path2 = "HED_pic"
     output_path = "train_data"
-    os.makedirs("train_data/" , exist_ok=True) 
+    os.makedirs("train_data/" , exist_ok=True)
     names = ['Harvard','met-1','met-2','Princeton-1','Princeton-2','Smithsonian-1','Smithsonian-2','Smithsonian-3','Smithsonian-4','Smithsonian-5']
     for name in names:
-        os.makedirs("train_data/%s" % name , exist_ok=True)
+        os.makedirs(f"train_data/{name}", exist_ok=True)
     process_all_trian_data(input_path1,input_path2,output_path)

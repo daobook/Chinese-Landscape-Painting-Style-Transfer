@@ -17,11 +17,11 @@ from opts import parse_opts
 opt = parse_opts()
 print(opt)
 
-os.makedirs("images_generate/%s" % opt.dataset_name, exist_ok=True)
-os.makedirs("save_models/%s" % opt.dataset_name, exist_ok=True)
-os.makedirs("result/%s" % opt.dataset_name, exist_ok=True)
+os.makedirs(f"images_generate/{opt.dataset_name}", exist_ok=True)
+os.makedirs(f"save_models/{opt.dataset_name}", exist_ok=True)
+os.makedirs(f"result/{opt.dataset_name}", exist_ok=True)
 
-cuda = True if torch.cuda.is_available() else False
+cuda = bool(torch.cuda.is_available())
 
 # 损失函数
 criterion_GAN = torch.nn.MSELoss()
@@ -81,7 +81,11 @@ def sample_images(batches_done):
     real_B = Variable(imgs[0].type(Tensor))
     fake_B = generator(real_A)
     img_sample = torch.cat((real_A.data, fake_B.data, real_B.data), -2)
-    cv2.imwrite("images_generate/%s/%s.png" % (opt.dataset_name, batches_done),255*img_sample[0].squeeze(0).cpu().swapaxes(0,2).swapaxes(0,1).numpy())
+    cv2.imwrite(
+        f"images_generate/{opt.dataset_name}/{batches_done}.png",
+        255
+        * img_sample[0].squeeze(0).cpu().swapaxes(0, 2).swapaxes(0, 1).numpy(),
+    )
 
 
 # ----------

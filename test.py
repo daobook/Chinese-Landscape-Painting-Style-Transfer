@@ -59,14 +59,14 @@ def main(path):
                                transforms.ToTensor(),
                            ])
 
-    cuda = True if torch.cuda.is_available() else False
+    cuda = bool(torch.cuda.is_available())
     generator = GeneratorUNet()
     if cuda:
         generator = generator.cuda() #使用gpu
     generator.load_state_dict(torch.load("generator_45_canny.pth"))
     Tensor = torch.cuda.FloatTensor if cuda else torch.FloatTensor
 
-    
+
     process(opt,path) #处理为HED边缘图像
     img = processing(path) #处理为canny边缘图像
     cv2.imwrite("canny.jpg",img)
