@@ -14,7 +14,7 @@ import torch
 
 ##########################################################
 
-assert(int(str('').join(torch.__version__.split('.')[0:2])) >= 13) # requires at least pytorch version 1.3.0
+assert int(''.join(torch.__version__.split('.')[:2])) >= 13
 
 torch.set_grad_enabled(False) # make sure to not compute gradients for computational performance
 
@@ -154,14 +154,14 @@ if __name__ == '__main__':
 	os.makedirs("processing_pic/" , exist_ok=True)
 	names = ['Harvard','met-1','met-2','Princeton-1','Princeton-2','Smithsonian-1','Smithsonian-2','Smithsonian-3','Smithsonian-4','Smithsonian-5']
 	for name in names:
-		os.makedirs("processing_pic/%s" % name , exist_ok=True)
+		os.makedirs(f"processing_pic/{name}", exist_ok=True)
 	output_path = "processing_pic" #输出路径
 
 
 	for label in sorted(os.listdir(input_path)): #label：来源哪个数据集
-		for fname in os.listdir(os.path.join(input_path, label)):
-			files_path.append(os.path.join(input_path, label, fname)) #图片的文件名
-	
+		files_path.extend(
+		    os.path.join(input_path, label, fname)
+		    for fname in os.listdir(os.path.join(input_path, label)))
 	for file_path in files_path:
 		arguments_strIn = file_path
 		all = file_path.split("\\")

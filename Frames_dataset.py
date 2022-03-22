@@ -24,22 +24,18 @@ class FramesDataset(Dataset):
 
         self.fnames = []
         self.fnames2 = []
-        if dataset == "alice":
+        if dataset in ["alice", 'my_own']:
             for label in sorted(os.listdir(self.picture_path)): #label：来源哪个数据集
-                for fname in os.listdir(os.path.join(self.picture_path, label)):
-                    self.fnames.append(os.path.join(self.picture_path, label, fname)) #文件名，还没到帧图片
-            for label in sorted(os.listdir(self.texture_path)): #label：来源哪个数据集
-                for fname in os.listdir(os.path.join(self.texture_path, label)):
-                    self.fnames2.append(os.path.join(self.texture_path, label, fname)) #文件名，还没到帧图片
+                self.fnames.extend(
+                    os.path.join(self.picture_path, label, fname)
+                    for fname in os.listdir(os.path.join(self.picture_path, label))
+                )
 
-
-        elif dataset == 'my_own':
-            for label in sorted(os.listdir(self.picture_path)): #label：来源哪个数据集
-                for fname in os.listdir(os.path.join(self.picture_path, label)):
-                    self.fnames.append(os.path.join(self.picture_path, label, fname)) #文件名，还没到帧图片
             for label in sorted(os.listdir(self.texture_path)): #label：来源哪个数据集
-                for fname in os.listdir(os.path.join(self.texture_path, label)):
-                    self.fnames2.append(os.path.join(self.texture_path, label, fname)) #文件名，还没到帧图片
+                self.fnames2.extend(
+                    os.path.join(self.texture_path, label, fname)
+                    for fname in os.listdir(os.path.join(self.texture_path, label))
+                )
 
         assert(len(self.fnames)==len(self.fnames2))
 
@@ -64,10 +60,7 @@ class FramesDataset(Dataset):
         return (picture,texture)
 
     def check_integrity(self):
-        if not os.path.exists(self.picture_path):
-            return False
-        else:
-            return True
+        return bool(os.path.exists(self.picture_path))
 
     def load_frames(self, file_dir1,file_dir2):
 

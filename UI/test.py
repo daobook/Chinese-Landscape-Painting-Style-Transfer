@@ -75,7 +75,7 @@ def model():
                                transforms.ToTensor(),
                            ])
 
-    cuda = True if torch.cuda.is_available() else False
+    cuda = bool(torch.cuda.is_available())
     generator = GeneratorUNet()
     if cuda:
         generator = generator.cuda() #使用gpu

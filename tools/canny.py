@@ -64,11 +64,7 @@ def get_gradient_and_direction(image):
             dx = np.sum(image[i:i+3, j:j+3] * Gx)
             dy = np.sum(image[i:i+3, j:j+3] * Gy)
             gradients[i, j] = np.sqrt(dx ** 2 + dy ** 2)
-            if dx == 0:
-                direction[i, j] = np.pi / 2
-            else:
-                direction[i, j] = np.arctan(dy / dx)
-
+            direction[i, j] = np.pi / 2 if dx == 0 else np.arctan(dy / dx)
     gradients = np.uint8(gradients)
     return gradients, direction
 
@@ -174,9 +170,7 @@ def processing(img_path):
     smoothed_image = smooth(image)
     gradients, direction = get_gradient_and_direction(smoothed_image)
     nms = NMS(gradients, direction)
-    output_image = double_threshold(nms, 40, 100)
-
-    return output_image
+    return double_threshold(nms, 40, 100)
 
 def main(input_path, output_path):
     '''
@@ -184,8 +178,10 @@ def main(input_path, output_path):
     '''
     files_path = []
     for label in sorted(os.listdir(input_path)): #label：来源哪个数据集
-        for fname in os.listdir(os.path.join(input_path, label)):
-            files_path.append(os.path.join(input_path, label, fname)) #图片的文件名
+        files_path.extend(
+            os.path.join(input_path, label, fname)
+            for fname in os.listdir(os.path.join(input_path, label))
+        )
 
     for file_path in files_path:
         all = file_path.split("\\")
@@ -204,6 +200,6 @@ if __name__ == "__main__":
     os.makedirs("canny_pic/" , exist_ok=True)
     names = ['Harvard','met-1','met-2','Princeton-1','Princeton-2','Smithsonian-1','Smithsonian-2','Smithsonian-3','Smithsonian-4','Smithsonian-5']
     for name in names:
-        os.makedirs("canny_pic/%s" % name , exist_ok=True)
+        os.makedirs(f"canny_pic/{name}", exist_ok=True)
     output_path = "canny_pic" #输出路径
     main(input_path, output_path)

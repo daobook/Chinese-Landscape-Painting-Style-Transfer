@@ -26,5 +26,4 @@ def parse_opts():
     parser.add_argument("--n_critic", type=int, default=5, help="number of training steps for discriminator per iter")
     parser.add_argument("--clip_value", type=float, default=0.01, help="lower and upper clip value for disc. weights")
 
-    args = parser.parse_args()
-    return args
+    return parser.parse_args()
